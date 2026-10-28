@@ -1,0 +1,483 @@
+/* ==========================================================================
+   VARIABLES & PALETTE (eSports / Cyberpunk Football Theme)
+   ========================================================================== */
+/* ==========================================================================
+   KEYFRAME ANIMATIONS
+   ========================================================================== */
+@keyframes beamRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes pulseBorder {
+  0%, 100% {
+    border-color: rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  50% {
+    border-color: rgba(6, 182, 212, 0.6);
+    box-shadow: 0 0 35px rgba(6, 182, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+}
+@keyframes floatIcon {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.03);
+  }
+}
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.18;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.3;
+  }
+}
+/* ==========================================================================
+   RESET & LAYOUT FIXES (NO SCROLL)
+   ========================================================================== */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: radial-gradient(ellipse at 50% -10%, #064e3b 0%, #0f172a 60%, #020617 100%);
+  color: #ffffff;
+}
+
+.game-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.game-wrapper *,
+.game-wrapper *::before,
+.game-wrapper *::after {
+  box-sizing: border-box;
+}
+
+/* Background Effects */
+.ambient-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, rgba(6, 182, 212, 0.12) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: pulseGlow 8s ease-in-out infinite;
+}
+
+.field-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
+  pointer-events: none;
+}
+
+.game-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 980px;
+  max-height: 100%;
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .game-container {
+    flex-direction: row;
+    align-items: stretch;
+    height: calc(100vh - 3rem);
+    max-height: 680px;
+  }
+}
+
+/* Shared Glassmorphism Cards */
+.game-card,
+.upgrades-card {
+  position: relative;
+  background: rgba(10, 15, 29, 0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  padding: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   LEFT CARD: MAIN INTERACTIVE GAME CARD
+   ========================================================================== */
+.game-card {
+  flex: 1.25;
+  justify-content: space-between;
+  animation: pulseBorder 6s infinite ease-in-out;
+}
+.game-card .game-card-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.game-card .game-card-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.12;
+  filter: contrast(1.2) brightness(0.8);
+}
+.game-card .game-card-bg .card-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.08) 0%, rgba(10, 15, 29, 0.95) 85%);
+}
+.game-card .game-card-bg .card-light-beam {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(16, 185, 129, 0.04) 60deg, transparent 120deg);
+  animation: beamRotate 20s linear infinite;
+}
+.game-card > *:not(.game-card-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Header & Scoreboard */
+.stats-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stats-header .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.85rem;
+  border-radius: 99px;
+}
+.stats-header .badge .badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+}
+.stats-header .player-count-wrapper {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stats-header .player-count-wrapper .count-box {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 1.75rem;
+  border-radius: 20px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+.stats-header .player-count-wrapper .player-count {
+  font-size: 3.6rem;
+  font-weight: 900;
+  line-height: 1;
+  margin: 0;
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, #ffffff 40%, #06b6d4 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 10px rgba(6, 182, 212, 0.4));
+}
+.stats-header .player-count-wrapper .unit-label {
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.stats-header .cps-badge {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 8px;
+}
+.stats-header .cps-badge small {
+  color: #94a3b8;
+  font-weight: 600;
+}
+.stats-header .progress-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 99px;
+  margin-top: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.stats-header .progress-container .progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #06b6d4, #10b981, #f59e0b);
+  border-radius: 99px;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+/* Middle Stat Blocks */
+.stats-strip {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+.stats-strip .stat-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 0.6rem 0.85rem;
+}
+.stats-strip .stat-item .stat-icon {
+  font-size: 1.2rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.3rem 0.5rem;
+  border-radius: 10px;
+}
+.stats-strip .stat-item .stat-info {
+  display: flex;
+  flex-direction: column;
+}
+.stats-strip .stat-item .stat-info .stat-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+.stats-strip .stat-item .stat-info .stat-value {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* Clicker Section */
+.click-section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+.click-section .field-circle {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 2px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+}
+.click-section .player-button {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+}
+.click-section .player-button .button-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.25) 0%, rgba(15, 23, 42, 0.85) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 2;
+}
+.click-section .player-button .button-inner .player-icon {
+  font-size: 4.2rem;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5));
+  user-select: none;
+  animation: floatIcon 3.5s ease-in-out infinite;
+}
+.click-section .player-button .button-glow {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.4) 0%, transparent 70%);
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+}
+.click-section .player-button:hover .button-inner {
+  transform: scale(1.06);
+  border-color: #f59e0b;
+}
+.click-section .player-button:hover .button-glow {
+  opacity: 1;
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+}
+.click-section .player-button:active .button-inner {
+  transform: scale(0.92);
+}
+
+/* ==========================================================================
+   RIGHT CARD: UPGRADES PANEL
+   ========================================================================== */
+.upgrades-card {
+  flex: 1;
+}
+.upgrades-card .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.upgrades-card .section-header .header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.upgrades-card .section-header .header-title h2 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #94a3b8;
+  margin: 0;
+  text-transform: uppercase;
+}
+.upgrades-card .section-header .upgrades-count {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+}
+.upgrades-card .upgrades-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+.upgrades-card .upgrade-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0.9rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.upgrades-card .upgrade-card .upgrade-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.upgrades-card .upgrade-card .upgrade-left .upgrade-icon-box {
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+.upgrades-card .upgrade-card .upgrade-left .upgrade-details {
+  display: flex;
+  flex-direction: column;
+}
+.upgrades-card .upgrade-card .upgrade-left .upgrade-details .upgrade-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.upgrades-card .upgrade-card .upgrade-left .upgrade-details .upgrade-rate {
+  font-size: 0.72rem;
+  color: #10b981;
+  font-weight: 700;
+}
+.upgrades-card .upgrade-card .upgrade-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.upgrades-card .upgrade-card .upgrade-right .owned-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  color: #94a3b8;
+}
+.upgrades-card .upgrade-card .upgrade-right .cost-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+.upgrades-card .upgrade-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(245, 158, 11, 0.4);
+  transform: translateY(-1px);
+}
+.upgrades-card .upgrade-card:hover .cost-badge {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+}
+
+/*# sourceMappingURL=main.css.map */

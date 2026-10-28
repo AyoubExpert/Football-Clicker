@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start PHP Server",
+            "type": "shell",
+            "command": "C:\\php\\php.exe",
+            "args": [
+                "-S",
+                "localhost:8000"
+            ],
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Compile SCSS",
+            "type": "shell",
+            "command": "npx",
+            "args": [
+                "sass",
+                "--watch",
+                "resources/assets/styles/scss/main.scss",
+                "resources/assets/styles/css/main.css"
+            ],
+            "isBackground": true,
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$node-sass"
+        }
+    ]
+}
